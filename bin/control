@@ -4,7 +4,7 @@ exit 0
 source $OPENSHIFT_CARTRIDGE_SDK_BASH
 
 function start {
-    ~/varnish/usr/sbin/varnishd -f ~/varnish/etc/varnish/default.vcl -n ~/varnish/var/lib/varnish -P ~/varnish/var/run/varnish.pid -u "$OPENSHIFT_GEAR_UUID" -a "$OPENSHIFT_DIY_IP":"$OPENSHIFT_DIY_PORT"
+    ~/varnish/usr/sbin/varnishd -f ~/varnish/etc/varnish/default.vcl -n ~/varnish/var/lib/varnish -P ~/varnish/var/run/varnish.pid -u "$OPENSHIFT_GEAR_UUID" -a "$OPENSHIFT_VARNISH_IP":"$OPENSHIFT_VARNISH_PORT"
  #-T 127.3.75.131:8080
 }
 
@@ -15,9 +15,6 @@ function stop {
 function restart {
   stop
   start
-}
-
-function status {
 }
 
 function build {
@@ -34,7 +31,7 @@ case "$1" in
   start)         start ;;
   stop)          stop ;;
   restart)       restart ;;
-  status)        status ;;
+  status)        not_implemented ;;
   reload)        not_implemented ;;
   tidy)          not_implemented ;;
   pre-build)     not_implemented ;;
@@ -42,7 +39,7 @@ case "$1" in
   deploy)        not_implemented ;;
   post-deploy)   not_implemented ;;
   pre-snapshot)  not_implemented ;;
-  post-snapshot  not_implemented ;;
+  post-snapshot) not_implemented ;;
   pre-restore)   not_implemented ;;
   post-restore)  not_implemented ;;
   pre-receive)   not_implemented ;;
