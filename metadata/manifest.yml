@@ -30,10 +30,10 @@ Publishes:
     Type: "NET_TCP:gear-endpoint-info"
 Subscribes:
 Endpoints:
-  - Private-IP-Name:   VARNISH_IP
-    Private-Port-Name: VARNISH_PORT
+  - Private-IP-Name:   IP
+    Private-Port-Name: PORT
     Private-Port:      8080
-    Public-Port-Name:  VARNISH_PUBLIC_PORT
+    Public-Port-Name:  PUBLIC_PORT
     Mappings:
       - Frontend:      ""
         Backend:       ""
