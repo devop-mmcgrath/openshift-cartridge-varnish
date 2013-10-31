@@ -3,7 +3,7 @@
 source $OPENSHIFT_CARTRIDGE_SDK_BASH
 CALL=$1
 function start {
-    ~/varnish/usr/sbin/varnishd -f $OPENSHIFT_REPO_DIR/default.vcl -n ~/varnish/var/lib/varnish -P ~/varnish/var/run/varnish.pid -u "$OPENSHIFT_GEAR_UUID" -a "$OPENSHIFT_VARNISH_IP":"$OPENSHIFT_VARNISH_PORT"
+    ~/varnish/usr/sbin/varnishd -f $OPENSHIFT_REPO_DIR/default.vcl -n ~/varnish/var/lib/varnish -P ~/varnish/var/run/varnish.pid -u "$OPENSHIFT_GEAR_UUID" -a "$OPENSHIFT_VARNISH_IP":"$OPENSHIFT_VARNISH_PORT" -p "${OPENSHIFT_VARNISH_DIR}usr/lib64/varnish/vmods/"
  #-T 127.3.75.131:8080
 }
 
