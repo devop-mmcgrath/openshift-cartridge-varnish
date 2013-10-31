@@ -1,0 +1,9 @@
+Please make sure that whatever is in "default.vcl" is what you want to be
+the running config.  If you'd like to use another config, like drupal, please
+copy over what is in default.vcl.
+
+$ cp drupal.vcl default.vcl
+$ git commit -a -m "replaced default vcl"
+$ git push
+
+That's it!
