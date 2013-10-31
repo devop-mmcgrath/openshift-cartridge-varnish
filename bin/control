@@ -1,8 +1,7 @@
 #!/bin/bash -eu
-exit 0
 
 source $OPENSHIFT_CARTRIDGE_SDK_BASH
-
+CALL=$1
 function start {
     ~/varnish/usr/sbin/varnishd -f $OPENSHIFT_REPO_DIR/default.vcl -n ~/varnish/var/lib/varnish -P ~/varnish/var/run/varnish.pid -u "$OPENSHIFT_GEAR_UUID" -a "$OPENSHIFT_VARNISH_IP":"$OPENSHIFT_VARNISH_PORT"
  #-T 127.3.75.131:8080
@@ -17,14 +16,8 @@ function restart {
   start
 }
 
-function build {
-  echo "Varnish building..."
-  touch $VARNISH_STATE/control_build
-  echo "Varnish successfully built."
-}
-
 function not_implemented {
-  echo "not implemented"
+  echo "$CALL: not implemented"
 }
 
 case "$1" in
@@ -35,7 +28,7 @@ case "$1" in
   reload)        not_implemented ;;
   tidy)          not_implemented ;;
   pre-build)     not_implemented ;;
-  build)         build ;;
+  build)         not_implemented ;;
   deploy)        not_implemented ;;
   post-deploy)   not_implemented ;;
   pre-snapshot)  not_implemented ;;
