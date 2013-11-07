@@ -1,5 +1,5 @@
 backend default {
-  .host = "CHANGEME.getup.io";
+  .host = "CHANGEME";
   .port = "80";
 }
 
@@ -34,7 +34,7 @@ acl purge {
 sub vcl_recv {
 
   set req.backend = default;
-  set req.http.host = "CHANGEME.getup.io";
+  set req.http.host = "CHANGEME";
   
 
 

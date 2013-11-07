@@ -17,7 +17,7 @@
 
 sub vcl_recv {
 	set req.backend = default;
-	set req.http.host = "CHANGEME.getup.io";
+	set req.http.host = "CHANGEME";
 	if (req.request ~ "^(GET|HEAD)$" && req.url ~ "\.(jpg|jpeg|gif|png|ico|css|zip|tgz|gz|rar|bz2|pdf|txt|tar|wav|bmp|rtf|js|flv|swf|html|htm)(\?.*)?$") {
 		if (req.url ~ "nocache") {
 			return(pass);
