@@ -2,13 +2,13 @@
 
 source $OPENSHIFT_CARTRIDGE_SDK_BASH
 CALL=$1
-pid=~/varnish/var/run/varnish.pid
+pidfile="${OPENSHIFT_VARNISH_DIR}var/run/varnish.pid"
 
 function start {
 
-  if ! [ -f $pid ]; then
-    ~/varnish/usr/sbin/varnishd -f $OPENSHIFT_REPO_DIR/default.vcl \
-    -n ~/varnish/var/lib/varnish -P ~/varnish/var/run/varnish.pid \
+  if ! [ -f $pidfile ]; then
+    "{$OPENSHIFT_VARNISH_DIR}usr/sbin/varnishd" -f $OPENSHIFT_REPO_DIR/default.vcl \
+    -n "${OPENSHIFT_VARNISH_DIR}var/lib/varnish" -P "${OPENSHIFT_VARNISH_DIR}var/run/varnish.pid" \
     -u "$OPENSHIFT_GEAR_UUID" \
     -a "$OPENSHIFT_VARNISH_IP":"$OPENSHIFT_VARNISH_PORT" \
     -p vmod_dir="${OPENSHIFT_VARNISH_DIR}usr/lib64/varnish/vmods/" \
@@ -18,16 +18,21 @@ function start {
 
     if [ $ret -ne 0 ]; then
       client_result "Varnish failed to start - $ret" 1>&2
-        return $ret
+      rm $pidfile
+      return $ret
     fi
   fi
 }
 
 function stop {
 
-  if [ -f $pid ]; then
+  pid=$(<$pidfile)
+
+  if [ -f $pidfile -a $pid -gt 0 ]; then
     kill -9 $(cat $pid)
-    return 0
+    rm $pid
+  elif [ -f $pidfile ]; then
+    rm $pidfile
   fi
 
 }
