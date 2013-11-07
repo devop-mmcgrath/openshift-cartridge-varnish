@@ -30,7 +30,7 @@ function stop {
 
   if [ -f $pidfile -a $pid -gt 0 ]; then
     kill -9 $pid
-    rm $pid
+    rm $pidfile
   elif [ -f $pidfile ]; then
     rm $pidfile
   fi
