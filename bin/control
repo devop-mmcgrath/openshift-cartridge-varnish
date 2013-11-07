@@ -2,18 +2,52 @@
 
 source $OPENSHIFT_CARTRIDGE_SDK_BASH
 CALL=$1
+pidfile="${OPENSHIFT_VARNISH_DIR}var/run/varnish.pid"
+
 function start {
-    ~/varnish/usr/sbin/varnishd -f $OPENSHIFT_REPO_DIR/default.vcl -n ~/varnish/var/lib/varnish -P ~/varnish/var/run/varnish.pid -u "$OPENSHIFT_GEAR_UUID" -a "$OPENSHIFT_VARNISH_IP":"$OPENSHIFT_VARNISH_PORT"
- #-T 127.3.75.131:8080
+
+  if ! [ -f $pidfile ]; then
+    "${OPENSHIFT_VARNISH_DIR}usr/sbin/varnishd" -f $OPENSHIFT_REPO_DIR/default.vcl \
+    -n "${OPENSHIFT_VARNISH_DIR}var/lib/varnish" -P "${OPENSHIFT_VARNISH_DIR}var/run/varnish.pid" \
+    -u "$OPENSHIFT_GEAR_UUID" \
+    -a "$OPENSHIFT_VARNISH_IP":"$OPENSHIFT_VARNISH_PORT" \
+    -p vmod_dir="${OPENSHIFT_VARNISH_DIR}usr/lib64/varnish/vmods/" \
+    -p vcl_dir="${OPENSHIFT_REPO_DIR}" \
+    -T "$OPENSHIFT_VARNISH_ADMIN_IP":"$OPENSHIFT_VARNISH_ADMIN_PORT"
+    ret=$?
+
+    if [ $ret -ne 0 ]; then
+      client_result "Varnish failed to start - $ret" 1>&2
+      rm $pidfile
+      return $ret
+    fi
+  fi
 }
 
 function stop {
-    killall varnishd
+
+  pid=$(<$pidfile)
+
+  if [ -f $pidfile -a -n "$pid" ]; then
+    kill -s SIGTERM  $pid
+    rm $pidfile
+  elif [ -f $pidfile ]; then
+    rm $pidfile
+  fi
+
 }
 
 function restart {
   stop
   start
+}
+
+function status {
+  if [ -f $pid ]; then
+    client_result  "Varnish cache is running"
+  else 
+    client_result "Varnish cache is stopped"
+  fi
 }
 
 function not_implemented {
@@ -24,7 +58,7 @@ case "$1" in
   start)         start ;;
   stop)          stop ;;
   restart)       restart ;;
-  status)        not_implemented ;;
+  status)        status ;;
   reload)        not_implemented ;;
   tidy)          not_implemented ;;
   pre-build)     not_implemented ;;
