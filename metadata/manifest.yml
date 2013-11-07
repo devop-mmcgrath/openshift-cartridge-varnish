@@ -41,6 +41,9 @@ Endpoints:
       - Frontend:      "/health"
         Backend:       ""
         Options:       { health: false }
+  - Private-IP-Name:  ADMIN_IP
+    Private-Port-Name: ADMIN_PORT
+    Private-Port: 8080
 Scaling:
   Min: 1
   Max: -1
