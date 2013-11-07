@@ -8,7 +8,7 @@ License: BSD
 Vendor: Red Hat / Varnish
 Cartridge-Version: 0.1
 Cartridge-Vendor: community
-Source-Url: https://github.com/mmcgrath-openshift/openshift-cartridge-varnish.git
+Source-Url: https://github.com/spinolacastro/openshift-cartridge-varnish.git
 Categories:
   - service
   - web_framework
