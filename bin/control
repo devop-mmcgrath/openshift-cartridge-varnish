@@ -7,7 +7,7 @@ pidfile="${OPENSHIFT_VARNISH_DIR}var/run/varnish.pid"
 function start {
 
   if ! [ -f $pidfile ]; then
-    "{$OPENSHIFT_VARNISH_DIR}usr/sbin/varnishd" -f $OPENSHIFT_REPO_DIR/default.vcl \
+    "${OPENSHIFT_VARNISH_DIR}usr/sbin/varnishd" -f $OPENSHIFT_REPO_DIR/default.vcl \
     -n "${OPENSHIFT_VARNISH_DIR}var/lib/varnish" -P "${OPENSHIFT_VARNISH_DIR}var/run/varnish.pid" \
     -u "$OPENSHIFT_GEAR_UUID" \
     -a "$OPENSHIFT_VARNISH_IP":"$OPENSHIFT_VARNISH_PORT" \
