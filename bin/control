@@ -26,7 +26,7 @@ function start {
 function stop {
 
   if [ -f $pid ]; then
-    kill -9 cat($pid)
+    kill -9 $(cat $pid)
     return 0
   fi
 
