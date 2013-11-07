@@ -28,8 +28,8 @@ function stop {
 
   pid=$(<$pidfile)
 
-  if [ -f $pidfile -a $pid -gt 0 ]; then
-    kill -9 $pid
+  if [ -f $pidfile -a -n "$pid" ]; then
+    kill -s SIGTERM  $pid
     rm $pidfile
   elif [ -f $pidfile ]; then
     rm $pidfile
