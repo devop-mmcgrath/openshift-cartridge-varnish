@@ -6,4 +6,23 @@ $ cp drupal.vcl default.vcl
 $ git commit -a -m "replaced default vcl"
 $ git push
 
+
+Attention for Wordpress:
+
+- Important, this wordpress vcl is based on https://github.com/dreamhost/varnish-vcl-collection 
+
+1) Replace all values of "CHANGEME" in the wordpress.vcl and wordpress/static.vcl for your application name
+2) You should install the "Varnish HTTP Purge" http://wordpress.org/plugins/varnish-http-purge/ plugin for auto invalidations
+ 	To reach a properly function please modify the value of "acl purge" in wordpress.vcl for the ip address of the node where your application is running on.
+ 	Varnish HTTP Purge requeries a special configuration on your wp-config, just add the lines below on top of your wp-config.php.
+
+ 	define('VHP_VARNISH_IP','VARNISH_APPLICATION_NAME');
+
+ 	Your should put the FQDN or the alias address of your Varnish application (remmember, Varnish is running on a different application of wordpress)
+3) Copy the wordpress.vcl over the default.vcl
+
+$ cp wordpress.vcl default.vcl
+$ git commit -a -m "replaced default vcl for wordpress"
+$ git push
+
 That's it!
