@@ -11,7 +11,7 @@ Attention for Wordpress:
 
 - Important, this wordpress vcl is based on https://github.com/dreamhost/varnish-vcl-collection 
 
-1) Replace all values of "CHANGEME" in the wordpress.vcl and wordpress/static.vcl for your application name
+1) Replace all values of "CHANGEME" in the wordpress.vcl, wordpress/static.vcl and wordpress/purge.vcl for your application name
 2) You should install the "Varnish HTTP Purge" http://wordpress.org/plugins/varnish-http-purge/ plugin for auto invalidations
  	To reach a properly function please modify the value of "acl purge" in wordpress.vcl for the ip address of the node where your application is running on.
  	Varnish HTTP Purge requeries a special configuration on your wp-config, just add the lines below on top of your wp-config.php.
