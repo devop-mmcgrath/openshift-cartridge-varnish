@@ -77,6 +77,8 @@ sub vcl_recv {
 			error 405 "Not allowed.";
 		}
 
+		set req.http.host = "CHANGEME";
+		
 		if (req.http.X-Purge-Method) {
 			if (req.http.X-Purge-Method ~ "(?i)regex") {
 				call purge_regex;
