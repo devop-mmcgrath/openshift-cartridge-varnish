@@ -43,7 +43,7 @@ function restart {
 }
 
 function status {
-  if [ -f $pid ]; then
+  if [ -f $pidfile ]; then
     client_result  "Varnish cache is running"
   else 
     client_result "Varnish cache is stopped"
