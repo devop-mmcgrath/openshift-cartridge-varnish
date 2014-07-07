@@ -29,7 +29,11 @@ function stop {
   pid=$(<$pidfile)
 
   if [ -f $pidfile -a -n "$pid" ]; then
-    kill -s SIGTERM  $pid
+    # Prevent against failure of the control script in cases where varnishd
+    # totally dies.
+    if kill -0 $pid; then
+      kill -s SIGTERM $pid
+    fi
     rm $pidfile
   elif [ -f $pidfile ]; then
     rm $pidfile
