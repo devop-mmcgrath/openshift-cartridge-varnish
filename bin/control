@@ -21,20 +21,28 @@ function start {
       rm $pidfile
       return $ret
     fi
+  else
+      pid=$(<$pidfile)
+      if [ -d "/proc/$pid" ]; then
+          client_result "Varnish already running"
+      else
+          client_error "Varnish is dead but pid file exists"
+      fi
   fi
 }
 
 function stop {
 
-  pid=$(<$pidfile)
-
-  if [ -f $pidfile -a -n "$pid" ]; then
-    # Prevent against failure of the control script in cases where varnishd
-    # totally dies.
-    if kill -0 $pid; then
-      kill -s SIGTERM $pid
+  if [ -f $pidfile ]; then
+    pid=$(<$pidfile)
+    if [ -n "$pid" ]; then
+     # Prevent against failure of the control script in cases where varnishd
+     # totally dies.
+     if [ -d "/proc/$pid" ]; then
+       kill -s SIGTERM $pid
+     fi
+     rm $pidfile
     fi
-    rm $pidfile
   elif [ -f $pidfile ]; then
     rm $pidfile
   fi
