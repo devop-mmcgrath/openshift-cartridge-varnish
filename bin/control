@@ -6,45 +6,63 @@ pidfile="${OPENSHIFT_VARNISH_DIR}var/run/varnish.pid"
 
 function start {
 
-  if ! [ -f $pidfile ]; then
-    "${OPENSHIFT_VARNISH_DIR}usr/sbin/varnishd" -f $OPENSHIFT_REPO_DIR/default.vcl \
+  if [ -f $pidfile ]; then
+    pid=$(<$pidfile)
+    # Check validity of pidfile
+    if [ -n "$pid" ]; then
+      varnish_procs=$( pgrep -u $OPENSHIFT_GEAR_UUID varnishd )
+      for p in $varnish_procs; do
+        if [ "$p" == "$pid" ]; then
+          # This is the only case where the pidfile is valid
+	  return
+        fi
+      done
+    fi
+    rm $pidfile
+  fi
+
+  "${OPENSHIFT_VARNISH_DIR}usr/sbin/varnishd" -f $OPENSHIFT_REPO_DIR/default.vcl \
     -n "${OPENSHIFT_VARNISH_DIR}var/lib/varnish" -P "${OPENSHIFT_VARNISH_DIR}var/run/varnish.pid" \
     -u "$OPENSHIFT_GEAR_UUID" \
     -a "$OPENSHIFT_VARNISH_IP":"$OPENSHIFT_VARNISH_PORT" \
     -p vmod_dir="${OPENSHIFT_VARNISH_DIR}usr/lib64/varnish/vmods/" \
     -p vcl_dir="${OPENSHIFT_REPO_DIR}" \
     -T "$OPENSHIFT_VARNISH_ADMIN_IP":"$OPENSHIFT_VARNISH_ADMIN_PORT"
-    ret=$?
+  ret=$?
 
-    if [ $ret -ne 0 ]; then
-      client_result "Varnish failed to start - $ret" 1>&2
-      rm $pidfile
-      return $ret
-    fi
-  else
-      pid=$(<$pidfile)
-      if [ -d "/proc/$pid" ]; then
-          client_result "Varnish already running"
-      else
-          client_error "Varnish is dead but pid file exists"
-      fi
+  if [ $ret -ne 0 ]; then
+    client_result "Varnish failed to start - $ret" 1>&2
+    rm $pidfile
+    return $ret
   fi
 }
 
 function stop {
 
+  varnish_procs=$( pgrep -u $OPENSHIFT_GEAR_UUID varnishd )
+  pid_to_kill=
   if [ -f $pidfile ]; then
     pid=$(<$pidfile)
     if [ -n "$pid" ]; then
-     # Prevent against failure of the control script in cases where varnishd
-     # totally dies.
-     if [ -d "/proc/$pid" ]; then
-       kill -s SIGTERM $pid
-     fi
-     rm $pidfile
+      for p in $varnish_procs; do
+        if [ "$p" == "$pid" ]; then
+          pid_to_kill=$p
+          break
+        fi
+      done
+
+      if [ -n "$pid_to_kill" ]; then
+        kill -s SIGTERM $pid
+      fi
     fi
-  elif [ -f $pidfile ]; then
     rm $pidfile
+  fi
+
+  # If the pidfile is stale, but other varnish procs exist, kill them.
+  # We don't kill other varnish procs if we found the one in the pidfile.
+  # Is this the right thing to do?
+  if [ -z "$pid_to_kill" ]; then
+    kill $varnish_procs
   fi
 
 }
